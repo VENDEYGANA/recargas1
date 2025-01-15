@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recargas CANTV</title>
+    <style>
+        /* Tu CSS aquí */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">RECARGAS</div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Cantv_logo.PNG" alt="CANTV Logo">
+        <input type="text" id="cedula" placeholder="Cédula de Identidad" oninput="validateCedula()">
+        <input type="email" id="correo" placeholder="Correo Electrónico">
+        <input type="text" id="numero" placeholder="Número a Recargar" oninput="validateNumero()">
+        <input type="text" id="monto" placeholder="Monto a Recargar" oninput="calculatePercentage()">
+        <p id="percentage"></p>
+        <button onclick="enviarDatos()">RECARGAR</button>
+    </div>
+
+    <script>
+        function validateCedula() {
+            const cedulaInput = document.getElementById('cedula');
+            cedulaInput.value = cedulaInput.value.replace(/[^0-9]/g, '');
+        }
+
+        function validateNumero() {
+            const numeroInput = document.getElementById('numero');
+            numeroInput.value = numeroInput.value.replace(/[^0-9]/g, '');
+        }
+
+        function calculatePercentage() {
+            const montoInput = document.getElementById('monto');
+            const percentageText = document.getElementById('percentage');
+            const monto = parseFloat(montoInput.value);
+            if (!isNaN(monto)) {
+                const percentage = (monto * 0.01).toFixed(2);
+                const total = (monto + parseFloat(percentage)).toFixed(2);
+                percentageText.textContent = `1% del monto: ${percentage}, Total a recargar: ${total}`;
+            } else {
+                percentageText.textContent = '';
+            }
+        }
+
+        function enviarDatos() {
+            const cedula = document.getElementById('cedula').value;
+            const correo = document.getElementById('correo').value;
+            const numero = document.getElementById('numero').value;
+            const monto = parseFloat(document.getElementById('monto').value);
+            const percentage = (monto * 0.01).toFixed(2);
+            const total = (monto + parseFloat(percentage)).toFixed(2);
+
+            fetch('TU_URL_DE_END_POINT', { // Reemplaza con la URL de tu endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cedula,
+                    correo,
+                    numero,
+                    monto,
+                    total
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
